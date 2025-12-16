@@ -6,7 +6,7 @@ interface Props {
 }
 
 const ReceiptItem = ({ name, price }: Props) => {
-  // 마운트되자마자(true) 0.9초(900ms) 동안 숫자가 올라감
+  // 마운트되자마자(true) 0.9초 동안 숫자가 올라감
   const animatedPrice = useNumberRolling(price, 900, true);
 
   return (

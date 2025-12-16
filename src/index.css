@@ -49,15 +49,40 @@ body,
 /* 영수증 출력 애니메이션 */
 @keyframes printer {
   0% {
-    transform: translateY(-120%);
-    opacity: 0;
+    transform: translateY(-90%);
   }
   100% {
     transform: translateY(0);
-    opacity: 1;
   }
 }
 
 .animate-printer {
-  animation: printer 6s steps(30, end) forwards;
+  animation: printer 6s steps(25, end) forwards;
+}
+
+/* 점이 하나씩 생기는 애니메이션 */
+@keyframes dotLoading {
+  0% {
+    content: '';
+  }
+  25% {
+    content: '.';
+  }
+  50% {
+    content: '..';
+  }
+  75% {
+    content: '...';
+  }
+  100% {
+    content: '';
+  }
+}
+
+.animate-dots::after {
+  content: '';
+  animation: dotLoading 1.5s infinite steps(1);
+  display: inline-block;
+  width: 1.5em;
+  text-align: left;
 }

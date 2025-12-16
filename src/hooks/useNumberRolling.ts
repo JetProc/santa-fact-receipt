@@ -14,7 +14,6 @@ export const useNumberRolling = (targetNumber: number, duration: number = 1500, 
       const progress = timestamp - startTime;
       const percentage = Math.min(progress / duration, 1);
 
-      // Easing 함수 (easeOutExpo): 끝부분에서 천천히 멈추는 효과
       const easeOut = (x: number): number => {
         return x === 1 ? 1 : 1 - Math.pow(2, -10 * x);
       };

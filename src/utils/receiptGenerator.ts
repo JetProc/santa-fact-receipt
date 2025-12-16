@@ -1,5 +1,5 @@
-import { questions } from '../data/questions';
-import { commonEvents } from '../data/commonEvents';
+import { getAllChips, baseItems } from '../data/data';
+import { type PersonaId } from '../data/types';
 
 export interface ReceiptItem {
   name: string;
@@ -13,64 +13,86 @@ export interface ReceiptResult {
   totalAmount: number;
   date: string;
   receiptNum: number;
+  rank: string;
+  message: string;
+  hashtags: string[];
 }
 
-// 랜덤 정수 생성 함수 (min ~ max)
-const getRandomPrice = (min: number, max: number) => {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
+const getResultAnalysis = (total: number) => {
+  if (total < 50000) {
+    return { rank: '알뜰 살림꾼 👼', message: '산타가 감동했습니다. \n내년엔 저축왕 도전?' };
+  } else if (total < 150000) {
+    return { rank: '평범한 시민 👤', message: '적당히 쓰고 적당히 살았군요. \n무난함 그 자체!' };
+  } else if (total < 300000) {
+    return { rank: '소비 요정 🧚', message: '통장이 텅장이 되는 마법! \n조금만 자제해볼까요?' };
+  } else if (total < 500000) {
+    return { rank: '지름신 강림 🔥', message: '스트레스를 돈으로 풀었군요. \n산타는 다 압니다.' };
+  } else {
+    return { rank: '자본주의 괴물 🦖', message: '도대체 돈을 어디에 쓴 거죠? \n내년엔 선물 없습니다.' };
+  }
 };
 
-// 배열에서 무작위로 n개 뽑는 함수 (공통 이벤트용)
-const getRandomSubarray = <T>(arr: T[], size: number): T[] => {
-  const shuffled = [...arr].sort(() => 0.5 - Math.random());
-  return shuffled.slice(0, size);
-};
-
-export const generateReceipt = (nickname: string, selectedChipIds: string[]): ReceiptResult => {
-  let items: ReceiptItem[] = [];
+export const generateReceipt = (
+  nickname: string,
+  persona: PersonaId | null,
+  selectedChipIds: string[],
+  answers: Record<string, string>
+): ReceiptResult => {
+  const items: ReceiptItem[] = [];
   let totalAmount = 0;
 
-  // 1. 사용자가 선택한 칩들을 영수증 항목으로 변환
-  questions.forEach((q) => {
-    q.chips.forEach((chip) => {
-      if (selectedChipIds.includes(chip.id)) {
-        // 해당 칩의 랜덤 멘트 중 하나 선택
-        const randomText = chip.receiptTexts[Math.floor(Math.random() * chip.receiptTexts.length)];
-        const randomPrice = getRandomPrice(chip.priceMin, chip.priceMax);
+  const allChips = getAllChips();
 
-        items.push({
-          name: randomText,
-          price: randomPrice,
-          qty: 1,
-        });
-        totalAmount += randomPrice;
+  // 1. 베이스 아이템
+  if (persona) {
+    const myBaseItems = baseItems.filter((item) => item.targetPersonas.includes(persona));
+    myBaseItems.forEach((item) => {
+      items.push({ name: item.text, price: item.cost, qty: 1 });
+      totalAmount += item.cost;
+    });
+  }
+
+  // 2. 칩 아이템 처리
+  const selectedLabels: string[] = [];
+
+  selectedChipIds.forEach((chipId) => {
+    const chip = allChips.find((c) => c.id === chipId);
+    if (!chip) return;
+
+    selectedLabels.push(chip.label);
+
+    let candidates = chip.items;
+    if (chip.type === 'select') {
+      const userAnswer = answers[chipId];
+      if (userAnswer) {
+        candidates = candidates.filter((item) => !item.requiredAnswer || item.requiredAnswer === userAnswer);
       }
-    });
+    }
+
+    if (candidates.length === 0) return;
+
+    const pickedItemData = candidates[Math.floor(Math.random() * candidates.length)];
+    let finalText = pickedItemData.text;
+    if (chip.type === 'input') {
+      const userAnswer = answers[chipId] || '';
+      finalText = finalText.replace('{input}', userAnswer);
+    }
+
+    items.push({ name: finalText, price: pickedItemData.cost, qty: 1 });
+    totalAmount += pickedItemData.cost;
   });
 
-  // 2. 대국민 공감 항목(랜덤 이벤트) 3개 추가
-  const randomEvents = getRandomSubarray(commonEvents, 3);
-  randomEvents.forEach((event) => {
-    items.push({
-      name: event.name,
-      price: event.price,
-      qty: 1,
-    });
-    totalAmount += event.price;
-  });
+  // 3. 해시태그 선정 (랜덤 3개)
+  const shuffledLabels = selectedLabels.sort(() => 0.5 - Math.random());
+  const hashtags = shuffledLabels.slice(0, 3).map((label) => `#${label}`);
 
-  // 3. 리스트 섞기 (선택 항목과 랜덤 항목이 자연스럽게 섞이도록)
-  items = items.sort(() => 0.5 - Math.random());
-
-  // 4. 고정 항목 추가 (숨쉬기 운동, 나이 세금 등) - 맨 위나 아래에 배치
-  items.unshift({ name: '🌬️ 숨쉬기 운동 (기본)', price: 0, qty: 366 });
-
-  // 5. 날짜 포맷팅
+  // 4. 결과 생성
   const now = new Date();
   const dateStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(
     2,
     '0'
   )} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+  const { rank, message } = getResultAnalysis(totalAmount);
 
   return {
     nickname,
@@ -78,5 +100,8 @@ export const generateReceipt = (nickname: string, selectedChipIds: string[]): Re
     totalAmount,
     date: dateStr,
     receiptNum: Math.floor(Math.random() * 10000),
+    rank,
+    message,
+    hashtags,
   };
 };

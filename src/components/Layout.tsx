@@ -27,9 +27,22 @@ const Layout = ({ children }: LayoutProps) => {
       <main className='flex-1 w-full overflow-y-auto relative bg-[#FDFBF7]'>{children}</main>
 
       {/* 푸터 */}
-      <footer className='w-full py-4 text-center text-gray-400 text-[10px] font-light bg-[#FDFBF7] border-t border-gray-100 shrink-0 relative z-50'>
-        <p>Contact: jetproc@gmail.com</p>
-        <p>© 2025 Santa's Fact Receipt</p>
+      <footer className='w-full py-3 bg-[#FDFBF7] border-t border-gray-100 shrink-0 relative z-50'>
+        <div className='max-w-3xl mx-auto flex items-center justify-between w-full px-4 text-gray-400 text-[12px] font-light'>
+          <span className='text-gray-400'>© 2025 Santa's Fact Receipt</span>
+
+          <a
+            href='https://open.kakao.com/o/sshuBn6h'
+            target='_blank'
+            rel='noopener noreferrer'
+            aria-label='오픈카카오톡 바로가기'
+            title='카카오톡으로 문의하기'
+            className='flex items-center gap-2 hover:opacity-80 transition-opacity'
+          >
+            <span className='hidden sm:inline text-[#1A1A1A] font-medium'>카카오톡 문의</span>
+            <img src='/kakaotalk_icon.png' alt='Kakaotalk' className='h-7 w-7' />
+          </a>
+        </div>
       </footer>
     </div>
   );

@@ -1,39 +1,59 @@
 import { create } from 'zustand';
+import { type PersonaId } from '../data/types';
 
 interface State {
   nickname: string;
+  step: number; // 0:Home, 1:Persona, 2:Chips, 3:Interrogation, 4:Result
+
+  persona: PersonaId | null;
   selectedChips: string[];
-  step: number;
+  answers: Record<string, string>;
 
   setNickname: (name: string) => void;
-  addChip: (chipId: string) => void;
-  removeChip: (chipId: string) => void;
+  setPersona: (id: PersonaId) => void;
+
+  toggleChip: (chipId: string) => void;
+  setAnswer: (chipId: string, answer: string) => void;
+
+  setStep: (step: number) => void;
   nextStep: () => void;
-  prevStep: () => void;
   reset: () => void;
 }
 
 export const useStore = create<State>((set) => ({
   nickname: '',
-  selectedChips: [],
   step: 0,
+  persona: null,
+  selectedChips: [],
+  answers: {},
 
   setNickname: (name) => set({ nickname: name }),
 
-  addChip: (chipId) =>
+  setPersona: (id) => set({ persona: id }),
+
+  toggleChip: (chipId) =>
     set((state) => {
-      if (state.selectedChips.includes(chipId)) return state;
+      if (state.selectedChips.includes(chipId)) {
+        return { selectedChips: state.selectedChips.filter((id) => id !== chipId) };
+      }
       return { selectedChips: [...state.selectedChips, chipId] };
     }),
 
-  removeChip: (chipId) =>
+  setAnswer: (chipId, answer) =>
     set((state) => ({
-      selectedChips: state.selectedChips.filter((id) => id !== chipId),
+      answers: { ...state.answers, [chipId]: answer },
     })),
+
+  setStep: (step) => set({ step }),
 
   nextStep: () => set((state) => ({ step: state.step + 1 })),
 
-  prevStep: () => set((state) => ({ step: Math.max(0, state.step - 1) })),
-
-  reset: () => set({ nickname: '', selectedChips: [], step: 0 }),
+  reset: () =>
+    set({
+      nickname: '',
+      step: 0,
+      persona: null,
+      selectedChips: [],
+      answers: {},
+    }),
 }));
