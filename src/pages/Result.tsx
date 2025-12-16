@@ -3,6 +3,7 @@ import { toPng } from 'html-to-image';
 
 import { useStore } from '../store/useStore';
 import { generateReceipt } from '../utils/receiptGenerator';
+import { saveReceiptToDatabase } from '../lib/receiptService';
 import Receipt from '../components/Receipt';
 
 const Result = () => {
@@ -16,6 +17,8 @@ const Result = () => {
   const [showTotal, setShowTotal] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
   const [isPaperReady, setIsPaperReady] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
 
   const receiptData = useMemo(() => {
     if (!nickname || selectedChips.length === 0) return null;
@@ -30,6 +33,25 @@ const Result = () => {
     }, 6000);
     return () => clearTimeout(timer);
   }, []);
+
+  // 영수증이 완성되면 Supabase에 저장
+  useEffect(() => {
+    if (isComplete && receiptData && !isSaving) {
+      setIsSaving(true);
+      saveReceiptToDatabase(receiptData)
+        .then((result) => {
+          if (!result.success) {
+            setSaveError('데이터 저장에 실패했습니다. 다시 시도해주세요.');
+          }
+          setIsSaving(false);
+        })
+        .catch((err) => {
+          console.error('저장 중 오류:', err);
+          setSaveError('데이터 저장 중 오류가 발생했습니다.');
+          setIsSaving(false);
+        });
+    }
+  }, [isComplete, receiptData]);
 
   const handleInteraction = () => {
     if (!receiptData || isComplete || !isPaperReady) return;
@@ -100,7 +122,7 @@ const Result = () => {
           )}
           {isComplete && (
             <div className='animate-bounce text-[#D32F2F] font-bold bg-white border-2 border-black px-4 py-1 rounded-full shadow-md text-xs'>
-              이미지를 저장하여 스토리에 공유하세요!
+              {isSaving ? '📤 저장 중...' : '이미지를 저장하여 스토리에 공유하세요!'}
             </div>
           )}
         </div>
@@ -171,6 +193,11 @@ const Result = () => {
         ${isComplete ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}
       `}
       >
+        {saveError && (
+          <div className='mb-3 p-3 bg-red-100 border-2 border-red-500 rounded-lg text-red-700 text-sm font-bold'>
+            ⚠️ {saveError}
+          </div>
+        )}
         <div className='w-full max-w-[480px] mx-auto flex gap-3'>
           <button
             onClick={(e) => {
