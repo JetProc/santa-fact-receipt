@@ -12,12 +12,12 @@ const Result = () => {
   const receiptRef = useRef<HTMLDivElement>(null);
   const exportRef = useRef<HTMLDivElement>(null);
   const scrollTargetRef = useRef<HTMLDivElement>(null);
+  const hasSavedRef = useRef(false);
 
   const [visibleIndex, setVisibleIndex] = useState(0);
   const [showTotal, setShowTotal] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
   const [isPaperReady, setIsPaperReady] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
 
   const receiptData = useMemo(() => {
@@ -36,20 +36,24 @@ const Result = () => {
 
   // 영수증이 완성되면 Supabase에 저장
   useEffect(() => {
-    if (isComplete && receiptData && !isSaving) {
-      setIsSaving(true);
-      saveReceiptToDatabase(receiptData)
-        .then((result) => {
+    if (isComplete && receiptData && !hasSavedRef.current) {
+      hasSavedRef.current = true;
+
+      const saveReceipt = async () => {
+        try {
+          const result = await saveReceiptToDatabase(receiptData);
           if (!result.success) {
             setSaveError('데이터 저장에 실패했습니다. 다시 시도해주세요.');
+          } else {
+            console.log('영수증이 성공적으로 저장되었습니다.');
           }
-          setIsSaving(false);
-        })
-        .catch((err) => {
+        } catch (err) {
           console.error('저장 중 오류:', err);
           setSaveError('데이터 저장 중 오류가 발생했습니다.');
-          setIsSaving(false);
-        });
+        }
+      };
+
+      saveReceipt();
     }
   }, [isComplete, receiptData]);
 
@@ -122,7 +126,7 @@ const Result = () => {
           )}
           {isComplete && (
             <div className='animate-bounce text-[#D32F2F] font-bold bg-white border-2 border-black px-4 py-1 rounded-full shadow-md text-xs'>
-              {isSaving ? '📤 저장 중...' : '이미지를 저장하여 스토리에 공유하세요!'}
+              이미지를 저장하여 스토리에 공유하세요!
             </div>
           )}
         </div>
