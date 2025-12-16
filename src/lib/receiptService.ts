@@ -8,8 +8,8 @@ export const saveReceiptToDatabase = async (receiptData: ReceiptResult) => {
         nickname: receiptData.nickname,
         persona: receiptData.rank,
         total_amount: receiptData.totalAmount,
-        items: receiptData.items,
-        answers: {}, // 필요시 answers 데이터도 저장 가능
+        items: JSON.stringify(receiptData.items),
+        answers: JSON.stringify({}),
         receipt_num: receiptData.receiptNum,
         message: receiptData.message,
         hashtags: receiptData.hashtags,
