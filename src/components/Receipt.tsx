@@ -117,7 +117,7 @@ const Receipt = forwardRef<HTMLDivElement, Props>(({ data, visibleIndex, showTot
               </p>
             </div>
 
-            {/* 해시태그 & QR코드 영역 (유입 유도) */}
+            {/* 해시태그 & QR코드 영역 */}
             <div className='flex items-end justify-between bg-white/40 p-3 rounded-lg border border-[#5D4037]/20'>
               {/* 왼쪽: 해시태그 & 등급 */}
               <div className='flex flex-col gap-2 flex-1'>
@@ -133,7 +133,7 @@ const Receipt = forwardRef<HTMLDivElement, Props>(({ data, visibleIndex, showTot
                 </div>
               </div>
 
-              {/* 오른쪽: QR코드 (실제 작동) */}
+              {/* 오른쪽: QR코드 */}
               <div className='flex flex-col items-center gap-1 ml-2'>
                 <img
                   src={`https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${encodeURIComponent(
@@ -146,7 +146,7 @@ const Receipt = forwardRef<HTMLDivElement, Props>(({ data, visibleIndex, showTot
               </div>
             </div>
 
-            {/* 도장 애니메이션 (위치 조정됨) */}
+            {/* 도장 애니메이션 */}
             <div
               className='absolute bottom-35 right-0 border-4 rounded-full w-24 h-24 flex flex-col items-center justify-center animate-stamp z-30 pointer-events-none'
               style={{

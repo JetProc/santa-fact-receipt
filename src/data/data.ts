@@ -27,7 +27,7 @@ export const baseItems: BaseItem[] = [
   { text: '주말 데이트 코스 검색 데이터 비용', cost: 200, targetPersonas: ['lover'] },
 ];
 
-// 3. 질문 및 칩 데이터 (기존 내용 유지 + 확장판)
+// 3. 질문 및 칩 데이터
 export const questionsData: Question[] = [
   {
     id: 'q_time',
