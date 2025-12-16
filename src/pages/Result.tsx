@@ -1,6 +1,6 @@
 import { useMemo, useRef, useState, useEffect } from 'react';
 import { toPng } from 'html-to-image';
-import { analytics } from '@vercel/analytics';
+import { track } from '@vercel/analytics';
 
 import { useStore } from '../store/useStore';
 import { generateReceipt } from '../utils/receiptGenerator';
@@ -41,7 +41,7 @@ const Result = () => {
       hasSavedRef.current = true;
 
       // 영수증 완성 이벤트 추적
-      analytics.track('receipt_completed', {
+      track('receipt_completed', {
         nickname: receiptData.nickname,
         total_amount: receiptData.totalAmount,
         rank: receiptData.rank,
@@ -56,7 +56,7 @@ const Result = () => {
           } else {
             console.log('영수증이 성공적으로 저장되었습니다.');
             // 데이터베이스 저장 성공 이벤트
-            analytics.track('receipt_saved', {
+            track('receipt_saved', {
               nickname: receiptData.nickname,
             });
           }
@@ -113,7 +113,7 @@ const Result = () => {
       link.click();
 
       // 이미지 다운로드 이벤트 추적
-      analytics.track('receipt_downloaded', {
+      track('receipt_downloaded', {
         nickname: nickname,
       });
     } catch (err) {
