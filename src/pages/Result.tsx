@@ -1,5 +1,6 @@
 import { useMemo, useRef, useState, useEffect } from 'react';
 import { toPng } from 'html-to-image';
+import { analytics } from '@vercel/analytics';
 
 import { useStore } from '../store/useStore';
 import { generateReceipt } from '../utils/receiptGenerator';
@@ -39,6 +40,14 @@ const Result = () => {
     if (isComplete && receiptData && !hasSavedRef.current) {
       hasSavedRef.current = true;
 
+      // 영수증 완성 이벤트 추적
+      analytics.track('receipt_completed', {
+        nickname: receiptData.nickname,
+        total_amount: receiptData.totalAmount,
+        rank: receiptData.rank,
+        item_count: receiptData.items.length,
+      });
+
       const saveReceipt = async () => {
         try {
           const result = await saveReceiptToDatabase(receiptData);
@@ -46,6 +55,10 @@ const Result = () => {
             setSaveError('데이터 저장에 실패했습니다. 다시 시도해주세요.');
           } else {
             console.log('영수증이 성공적으로 저장되었습니다.');
+            // 데이터베이스 저장 성공 이벤트
+            analytics.track('receipt_saved', {
+              nickname: receiptData.nickname,
+            });
           }
         } catch (err) {
           console.error('저장 중 오류:', err);
@@ -98,6 +111,11 @@ const Result = () => {
       link.download = `santa's-fact-receipt-${nickname}.png`;
       link.href = dataUrl;
       link.click();
+
+      // 이미지 다운로드 이벤트 추적
+      analytics.track('receipt_downloaded', {
+        nickname: nickname,
+      });
     } catch (err) {
       console.error(err);
       alert('저장 실패ㅠㅠ 캡처해주세요!');
