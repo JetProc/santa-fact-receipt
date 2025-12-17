@@ -18,7 +18,7 @@ const Layout = ({ children }: LayoutProps) => {
       {/* 헤더 */}
       <header className='w-full h-[60px] flex items-center justify-center bg-[#FDFBF7] border-b-2 border-[#1A1A1A] px-4 shrink-0 relative z-50'>
         <button onClick={handleGoHome} className='flex items-center gap-3 hover:opacity-70 transition-opacity'>
-          <img src='/santa2.png' alt='Santa' className='h-8 w-auto object-contain' />
+          <img src='/santa4.png' alt='Santa' className='h-8 w-auto object-contain' />
           <h1 className='text-xl font-black tracking-tighter text-[#1A1A1A]'>SANTA'S FACT RECEIPT</h1>
         </button>
       </header>

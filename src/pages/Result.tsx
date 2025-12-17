@@ -22,7 +22,6 @@ const Result = () => {
     return generateReceipt(nickname, persona, selectedChips, answers);
   }, [nickname, persona, selectedChips, answers]);
 
-  // 배경 이미지 선택 (public 폴더의 이미지 파일명 사용)
   const getBackgroundImage = (total: number) => {
     if (total < 50000) return '/santa_result_surprised.png';
     if (total < 150000) return '/santa_result_wink.png';
@@ -69,14 +68,18 @@ const Result = () => {
   const handleDownload = async () => {
     if (!exportRef.current) return;
     try {
+      // 폰트 로딩 대기(렌더링 안정화)
       await document.fonts.ready;
 
-      await toPng(exportRef.current, {
-        cacheBust: true,
-        width: 1080,
-        height: 1920,
-        pixelRatio: 1,
-      });
+      // 캡처 전에 export 영역에 적용된 이미지들이 로드되었는지 잠깐 대기
+      const imgs = exportRef.current.querySelectorAll('img');
+      await Promise.all(
+        Array.from(imgs).map((img) =>
+          img.complete && (img as HTMLImageElement).naturalWidth > 0
+            ? Promise.resolve()
+            : new Promise((res) => ((img as HTMLImageElement).onload = res))
+        )
+      );
 
       const dataUrl = await toPng(exportRef.current, {
         cacheBust: true,
@@ -152,31 +155,41 @@ const Result = () => {
         >
           {/* 비네팅 및 테두리 */}
           <div
-            className='absolute inset-0 pointer-events-none'
+            className='absolute inset-0 pointer-events-none z-10'
             style={{ background: 'radial-gradient(circle at center, transparent 40%, rgba(0,0,0,0.3) 100%)' }}
           ></div>
-          <div className='absolute inset-6 border-4 border-dashed border-[#F8F1E5]/40 pointer-events-none rounded-3xl z-0'></div>
+          <div className='absolute inset-6 border-4 border-dashed border-[#F8F1E5]/40 pointer-events-none rounded-3xl z-20'></div>
 
           {/* 메인 컨텐츠 */}
-          <div className='transform scale-[1.4] flex flex-col items-center drop-shadow-2xl relative z-10'>
+          {/* export용 배경 이미지 (total 기준) */}
+          <img
+            src={getBackgroundImage(receiptData.totalAmount)}
+            alt='background'
+            crossOrigin='anonymous'
+            className='absolute left-1/2 top-1/2 transform -translate-x-1/4 -translate-y-1/2 w-3xl h-3xl object-cover z-0 opacity-50'
+          />
+
+          <div className='transform scale-[1.4] flex flex-col items-center drop-shadow-2xl relative z-30'>
             <div className='text-center mb-10 shrink-0'>
               <h1 className='text-5xl font-bold font-receipt text-[#F8F1E5] tracking-tighter mb-4 drop-shadow-[0_4px_4px_rgba(0,0,0,0.3)]'>
                 2025 Santa's Fact Check
               </h1>
-              <p className='text-2xl font-receipt text-[#F8F1E5]/90 drop-shadow-sm'>산타가 보낸 팩폭 청구서</p>
+              <p className='text-2xl font-receipt text-[#F8F1E5]/90 drop-shadow-sm mb-4'>
+                산타가 {receiptData.nickname}님에게 보낸 팩폭 청구서
+              </p>
             </div>
 
-            <div className='-translate-x-30'>
+            <div className='-translate-x-36'>
               <Receipt data={receiptData} visibleIndex={9999} showTotal={true} />
             </div>
-          </div>
 
-          <img
-            src='/santa4.png'
-            alt='Santa'
-            crossOrigin='anonymous'
-            className='absolute bottom-20 right-12 w-72 drop-shadow-2xl z-20 transform rotate-[-5deg]'
-          />
+            <img
+              src='/santa_hand.png'
+              alt='Santa hand'
+              crossOrigin='anonymous'
+              className='absolute top-12 -left-48 w-m z-45 pointer-events-none'
+            />
+          </div>
         </div>
       </div>
 

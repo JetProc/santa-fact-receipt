@@ -189,12 +189,22 @@ function App() {
                 ))}
               </div>
 
-              <button
-                onClick={() => setStep(resultStep)}
-                className='w-full mt-3 py-3 bg-[#D32F2F] text-white text-lg font-bold rounded-lg shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] shrink-0'
-              >
-                영수증 출력하기 🧾
-              </button>
+              {(() => {
+                const allAnswered = interrogationChips.every((chip) => answers[chip.id]);
+                return (
+                  <button
+                    onClick={() => setStep(resultStep)}
+                    disabled={!allAnswered}
+                    className={`w-full mt-3 py-3 text-lg font-bold rounded-lg shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] shrink-0 transition-colors ${
+                      allAnswered
+                        ? 'bg-[#D32F2F] text-white hover:bg-[#B71C1C]'
+                        : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                    }`}
+                  >
+                    영수증 출력하기 🧾
+                  </button>
+                );
+              })()}
             </div>
           )}
 
