@@ -70,7 +70,6 @@ const Result = () => {
     try {
       await document.fonts.ready;
 
-      // 캡처 전에 export 영역에 적용된 이미지들이 로드되었는지 잠깐 대기
       const imgs = exportRef.current.querySelectorAll('img');
       await Promise.all(
         Array.from(imgs).map((img) =>
@@ -81,14 +80,16 @@ const Result = () => {
       );
 
       await toPng(exportRef.current, {
-        cacheBust: true,
+        cacheBust: false,
         width: 1080,
         height: 1920,
         pixelRatio: 1,
       });
 
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
       const dataUrl = await toPng(exportRef.current, {
-        cacheBust: true,
+        cacheBust: false,
         width: 1080,
         height: 1920,
         pixelRatio: 1,
