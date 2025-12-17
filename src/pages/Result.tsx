@@ -22,6 +22,15 @@ const Result = () => {
     return generateReceipt(nickname, persona, selectedChips, answers);
   }, [nickname, persona, selectedChips, answers]);
 
+  // 배경 이미지 선택 (public 폴더의 이미지 파일명 사용)
+  const getBackgroundImage = (total: number) => {
+    if (total < 50000) return '/santa_result_surprised.png';
+    if (total < 150000) return '/santa_result_wink.png';
+    if (total < 300000) return '/santa_result_default.png';
+    if (total < 500000) return '/santa_result_sad.png';
+    return '/santa_result_angry.png';
+  };
+
   const totalItemsCount = receiptData ? receiptData.items.length : 0;
 
   useEffect(() => {
