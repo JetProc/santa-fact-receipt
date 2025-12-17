@@ -13,7 +13,7 @@ export default {
         },
       },
       fontFamily: {
-        receipt: ['"Galmuri9"', '"Courier New"', 'monospace'],
+        receipt: ['"Galmuri9"', 'monospace'],
       },
       keyframes: {
         printer: {
