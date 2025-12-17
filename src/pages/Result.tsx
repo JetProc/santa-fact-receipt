@@ -147,7 +147,7 @@ const Result = () => {
       <div style={{ position: 'absolute', top: '-9999px', left: '-9999px' }}>
         <div
           ref={exportRef}
-          className='w-[1080px] h-[1920px] flex flex-col items-center justify-center relative overflow-hidden p-10'
+          className='w-[1080px] h-[1920px] flex flex-col items-center justify-center relative overflow-hidden p-20'
           style={{
             backgroundColor: '#D32F2F',
             backgroundImage: `
@@ -172,7 +172,7 @@ const Result = () => {
             src={getBackgroundImage(receiptData.totalAmount)}
             alt='background'
             crossOrigin='anonymous'
-            className='absolute left-1/2 top-1/2 transform -translate-x-1/4 -translate-y-1/2 w-3xl h-3xl object-cover z-0 opacity-50'
+            className='absolute left-1/2 top-1/2 transform -translate-x-1/3 -translate-y-1/2 w-4xl h-4xl object-cover z-0 opacity-50'
           />
 
           <div className='transform scale-[1.4] flex flex-col items-center drop-shadow-2xl relative z-30'>
@@ -180,7 +180,7 @@ const Result = () => {
               <h1 className='text-5xl font-bold font-receipt text-[#F8F1E5] tracking-tighter mb-4 drop-shadow-[0_4px_4px_rgba(0,0,0,0.3)]'>
                 2025 Santa's Fact Check
               </h1>
-              <p className='text-2xl font-receipt text-[#F8F1E5]/90 drop-shadow-sm mb-4'>
+              <p className='text-2xl font-bold font-receipt text-[#F8F1E5]/90 drop-shadow-sm mb-4'>
                 산타가 {receiptData.nickname}님에게 보낸 팩폭 청구서
               </p>
             </div>
@@ -195,6 +195,11 @@ const Result = () => {
               crossOrigin='anonymous'
               className='absolute top-12 -left-48 w-m z-45 pointer-events-none'
             />
+          </div>
+
+          {/* 하단 웹사이트 주소 */}
+          <div className='absolute bottom-10 left-0 right-0 flex justify-center text-center text-2xl font-bold text-[#F8F1E5]/70 font-receipt drop-shadow-sm'>
+            www.santa-fact-receipt.com
           </div>
         </div>
       </div>

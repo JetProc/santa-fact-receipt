@@ -67,7 +67,7 @@ const Receipt = forwardRef<HTMLDivElement, Props>(({ data, visibleIndex, showTot
         </div>
 
         {/* 메타 정보 */}
-        <div className='flex justify-between text-[11px] mb-6 uppercase font-bold tracking-wide relative z-20'>
+        <div className='flex justify-between text-[11px] mb-6 uppercase font-bold tracking-wide relative z-20 whitespace-nowrap'>
           <div className='flex flex-col gap-1'>
             <span>📅 {data.date.split(' ')[0]}</span>
             <span>⏰ {data.date.split(' ')[1]}</span>

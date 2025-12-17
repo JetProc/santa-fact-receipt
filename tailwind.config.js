@@ -13,7 +13,7 @@ export default {
         },
       },
       fontFamily: {
-        receipt: ['"Galmuri9"', 'monospace'],
+        receipt: ['"IBM Plex Mono"', '"Galmuri9"', '"Courier New"', 'monospace'],
       },
       keyframes: {
         printer: {
