@@ -1,10 +1,8 @@
 import { useMemo, useRef, useState, useEffect } from 'react';
 import { toPng } from 'html-to-image';
-import { track } from '@vercel/analytics';
 
 import { useStore } from '../store/useStore';
 import { generateReceipt } from '../utils/receiptGenerator';
-import { saveReceiptToDatabase } from '../lib/receiptService';
 import Receipt from '../components/Receipt';
 
 const Result = () => {
@@ -13,13 +11,11 @@ const Result = () => {
   const receiptRef = useRef<HTMLDivElement>(null);
   const exportRef = useRef<HTMLDivElement>(null);
   const scrollTargetRef = useRef<HTMLDivElement>(null);
-  const hasSavedRef = useRef(false);
 
   const [visibleIndex, setVisibleIndex] = useState(0);
   const [showTotal, setShowTotal] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
   const [isPaperReady, setIsPaperReady] = useState(false);
-  const [saveError, setSaveError] = useState<string | null>(null);
 
   const receiptData = useMemo(() => {
     if (!nickname || selectedChips.length === 0) return null;
@@ -34,41 +30,6 @@ const Result = () => {
     }, 6000);
     return () => clearTimeout(timer);
   }, []);
-
-  // 영수증이 완성되면 Supabase에 저장
-  useEffect(() => {
-    if (isComplete && receiptData && !hasSavedRef.current) {
-      hasSavedRef.current = true;
-
-      // 영수증 완성 이벤트 추적
-      track('receipt_completed', {
-        nickname: receiptData.nickname,
-        total_amount: receiptData.totalAmount,
-        rank: receiptData.rank,
-        item_count: receiptData.items.length,
-      });
-
-      const saveReceipt = async () => {
-        try {
-          const result = await saveReceiptToDatabase(receiptData);
-          if (!result.success) {
-            setSaveError('데이터 저장에 실패했습니다. 다시 시도해주세요.');
-          } else {
-            console.log('영수증이 성공적으로 저장되었습니다.');
-            // 데이터베이스 저장 성공 이벤트
-            track('receipt_saved', {
-              nickname: receiptData.nickname,
-            });
-          }
-        } catch (err) {
-          console.error('저장 중 오류:', err);
-          setSaveError('데이터 저장 중 오류가 발생했습니다.');
-        }
-      };
-
-      saveReceipt();
-    }
-  }, [isComplete, receiptData]);
 
   const handleInteraction = () => {
     if (!receiptData || isComplete || !isPaperReady) return;
@@ -86,8 +47,6 @@ const Result = () => {
 
       setTimeout(() => {
         if (scrollTargetRef.current) {
-          // ✅ [수정] block: 'center' -> 'end'로 변경
-          // 화면의 끝을 영수증의 끝에 맞춰서, 그 위에 있는 '총 금액'이 화면에 잘 들어오도록 함
           scrollTargetRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
         }
       }, 100);
@@ -101,21 +60,26 @@ const Result = () => {
   const handleDownload = async () => {
     if (!exportRef.current) return;
     try {
+      await document.fonts.ready;
+
+      await toPng(exportRef.current, {
+        cacheBust: true,
+        width: 1080,
+        height: 1920,
+        pixelRatio: 1,
+      });
+
       const dataUrl = await toPng(exportRef.current, {
         cacheBust: true,
         width: 1080,
         height: 1920,
         pixelRatio: 1,
       });
+
       const link = document.createElement('a');
       link.download = `santa's-fact-receipt-${nickname}.png`;
       link.href = dataUrl;
       link.click();
-
-      // 이미지 다운로드 이벤트 추적
-      track('receipt_downloaded', {
-        nickname: nickname,
-      });
     } catch (err) {
       console.error(err);
       alert('저장 실패ㅠㅠ 캡처해주세요!');
@@ -161,7 +125,7 @@ const Result = () => {
         </div>
       </div>
 
-      {/* 캡처용 숨겨진 영역*/}
+      {/* 📸 캡처용 숨겨진 영역 */}
       <div style={{ position: 'absolute', top: '-9999px', left: '-9999px' }}>
         <div
           ref={exportRef}
@@ -201,7 +165,8 @@ const Result = () => {
           <img
             src='/santa4.png'
             alt='Santa'
-            className='absolute bottom-18 right-12 w-70 drop-shadow-2xl z-20 transform rotate-[-5deg]'
+            crossOrigin='anonymous'
+            className='absolute bottom-20 right-12 w-72 drop-shadow-2xl z-20 transform rotate-[-5deg]'
           />
         </div>
       </div>
@@ -215,11 +180,6 @@ const Result = () => {
         ${isComplete ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}
       `}
       >
-        {saveError && (
-          <div className='mb-3 p-3 bg-red-100 border-2 border-red-500 rounded-lg text-red-700 text-sm font-bold'>
-            ⚠️ {saveError}
-          </div>
-        )}
         <div className='w-full max-w-[480px] mx-auto flex gap-3'>
           <button
             onClick={(e) => {
