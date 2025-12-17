@@ -68,7 +68,6 @@ const Result = () => {
   const handleDownload = async () => {
     if (!exportRef.current) return;
     try {
-      // 폰트 로딩 대기(렌더링 안정화)
       await document.fonts.ready;
 
       // 캡처 전에 export 영역에 적용된 이미지들이 로드되었는지 잠깐 대기
@@ -80,6 +79,13 @@ const Result = () => {
             : new Promise((res) => ((img as HTMLImageElement).onload = res))
         )
       );
+
+      await toPng(exportRef.current, {
+        cacheBust: true,
+        width: 1080,
+        height: 1920,
+        pixelRatio: 1,
+      });
 
       const dataUrl = await toPng(exportRef.current, {
         cacheBust: true,
