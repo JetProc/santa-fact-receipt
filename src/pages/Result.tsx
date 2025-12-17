@@ -206,12 +206,13 @@ const Result = () => {
       </div>
 
       {/* 하단 버튼 그룹 */}
+      {/* 하단 버튼 그룹 */}
       <div
         className={`
         fixed left-0 w-full p-4 bottom-[60px]
         bg-gradient-to-t from-[#FDFBF7] via-[#FDFBF7] to-transparent 
         transition-all duration-500 z-40 
-        ${isComplete ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}
+        ${isComplete ? 'translate-y-0 opacity-100 pointer-events-auto' : 'translate-y-10 opacity-0 pointer-events-none'}
       `}
       >
         <div className='w-full max-w-[480px] mx-auto flex gap-3'>
