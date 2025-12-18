@@ -12,19 +12,19 @@ export const personas: Persona[] = [
 // 2. 베이스 아이템
 export const baseItems: BaseItem[] = [
   // 학생
-  { text: '시험 기간 벼락치기 에너지 드링크', cost: 4500, targetPersonas: ['student'] },
-  { text: '교수님 죄송합니다 메일 작성비', cost: 100, targetPersonas: ['student'] },
+  { text: '시험 기간 벼락치기 에너지 드링크 비용', cost: 4500, targetPersonas: ['student'] },
+  { text: '시험 문제 하나도 모르겠어서 찍음', cost: 0, targetPersonas: ['student'] },
   // 취준생
-  { text: '자소서 쓰다 멘탈 나간 치료비', cost: 1000, targetPersonas: ['job_seeker'] },
+  { text: '자소서 쓰다 멘탈 나간 치료비', cost: 10000, targetPersonas: ['job_seeker'] },
   { text: '채용 공고 무한 새로고침 노동비', cost: 50, targetPersonas: ['job_seeker'] },
   // 직장인
-  { text: '생명 연장용 아이스 아메리카노', cost: 2500, targetPersonas: ['worker'] },
+  { text: '생명 연장용 아이스 아메리카노', cost: 3500, targetPersonas: ['worker'] },
   { text: '마음속 사직서 품기 수수료', cost: 0, targetPersonas: ['worker'] },
   // 갓생러
   { text: '오운완(오늘 운동 완료) 인증샷 촬영비', cost: 0, targetPersonas: ['god_life'] },
   { text: '미라클 모닝 알람 5개 설정비', cost: 0, targetPersonas: ['god_life'] },
   // 사랑꾼
-  { text: '주말 데이트 코스 검색 데이터 비용', cost: 200, targetPersonas: ['lover'] },
+  { text: '주말 데이트 코스 검색 데이터 비용', cost: 600, targetPersonas: ['lover'] },
 ];
 
 // 3. 질문 및 칩 데이터
@@ -61,9 +61,9 @@ export const questionsData: Question[] = [
         label: '배달음식',
         type: 'normal',
         items: [
-          { text: '리뷰이벤트 열심히 써서 아낀 비용', cost: -3000 },
-          { text: '스트레스 풀려다 위장 버린 치료비', cost: 8500 },
-          { text: '최소주문금액 채우려다 산 사이드메뉴', cost: 4000 },
+          { text: '배민 리뷰이벤트 열심히 써서 아낀 비용', cost: -3000 },
+          { text: '스트레스 풀려고 매운 음식 시켰다가 위장 버린 치료비', cost: 8500 },
+          { text: '배달 최소주문금액 채우려다 산 사이드메뉴', cost: 4000 },
         ],
       },
       {
@@ -73,7 +73,7 @@ export const questionsData: Question[] = [
         question: '청소할 때 나는?',
         options: ['매일 꾸준히', '대청소', '미루기'],
         items: [
-          { text: '돌돌이 테이프 무한 리필 구매', cost: 6000, requiredAnswer: '매일 꾸준히' },
+          { text: '머리카락을 위한 돌돌이 테이프 무한 리필 구매', cost: 6000, requiredAnswer: '매일 꾸준히' },
           { text: '청소하다 소파 밑에서 동전 발견', cost: -500, requiredAnswer: '대청소' },
           { text: '의자 위 옷 무덤 건설비', cost: 0, requiredAnswer: '미루기' },
         ],
@@ -85,7 +85,7 @@ export const questionsData: Question[] = [
         question: '어떤 게임을 즐기셨나요?',
         options: ['모바일(가챠)', 'PC/콘솔', '보기만함'],
         items: [
-          { text: '확률형 아이템 뽑기 폭망 비용', cost: 110000, requiredAnswer: '모바일(가챠)' },
+          { text: '게임에서 확률형 아이템 뽑기 폭망 비용', cost: 110000, requiredAnswer: '모바일(가챠)' },
           { text: '블프 세일 못 참고 지른 게임 라이브러리 장식비', cost: 45000, requiredAnswer: 'PC/콘솔' },
           { text: '남이 게임하는 거 구경해서 아낀 게임값', cost: -33000, requiredAnswer: '보기만함' },
         ],
@@ -97,9 +97,9 @@ export const questionsData: Question[] = [
         question: '반려동물과 무엇을 했나요?',
         options: ['간식/장난감', '병원', '힐링'],
         items: [
-          { text: '주인님 간식 조공비', cost: 24000, requiredAnswer: '간식/장난감' },
+          { text: '반려동물 주인님 간식 조공비', cost: 24000, requiredAnswer: '간식/장난감' },
           { text: '반려동물 병원 비용', cost: 120000, requiredAnswer: '병원' },
-          { text: '존재만으로 힐링된 정신적 이득', cost: -100000, requiredAnswer: '힐링' },
+          { text: '반려동물 존재만으로 힐링된 정신적 이득', cost: -100000, requiredAnswer: '힐링' },
         ],
       },
     ],
@@ -116,8 +116,8 @@ export const questionsData: Question[] = [
         question: '주로 어디서 쇼핑했나요?',
         options: ['온라인', '오프라인', '당근'],
         items: [
-          { text: '모델 핏 보고 샀다가 반품비만 날림', cost: 3000, requiredAnswer: '온라인' },
-          { text: '오래 입을 거라며 합리화한 할부금', cost: 33000, requiredAnswer: '오프라인' },
+          { text: '온랄인에서 모델 핏 보고 옷 샀다가 반품비만 날림', cost: 3000, requiredAnswer: '온라인' },
+          { text: '오래 입을 거라며 합리화해서 산 옷 할부금', cost: 33000, requiredAnswer: '오프라인' },
           { text: '당근마켓 쿨거래로 득템', cost: -15000, requiredAnswer: '당근' },
         ],
       },
@@ -127,7 +127,7 @@ export const questionsData: Question[] = [
         type: 'input',
         question: '누굴(무엇을) 위해 지갑을 열었나요?',
         items: [
-          { text: '{input} 한정판 굿즈 프리미엄 구매', cost: 85000 },
+          { text: '{input} 한정판 프리미엄 굿즈 구매', cost: 85000 },
           { text: '{input} 생각만 해도 배불러서 식비 절약', cost: -8000 },
         ],
       },
@@ -138,9 +138,9 @@ export const questionsData: Question[] = [
         question: '술 마시고 주로 한 행동은?',
         options: ['숙취/삭제', '분실/파손', '택시엔딩'],
         items: [
-          { text: '기억 삭제 및 숙취해소제 구매', cost: 8000, requiredAnswer: '숙취/삭제' },
-          { text: '에어팟 한쪽 잃어버리고 눈물의 재구매', cost: 90000, requiredAnswer: '분실/파손' },
-          { text: '지하철 끊겨서 탄 모범택시', cost: 25000, requiredAnswer: '택시엔딩' },
+          { text: '술 먹고 기억 삭제 및 숙취해소제 구매', cost: 8000, requiredAnswer: '숙취/삭제' },
+          { text: '술 먹고 에어팟 한쪽 잃어버리고 눈물의 재구매', cost: 90000, requiredAnswer: '분실/파손' },
+          { text: '술 먹고 지하철 끊겨서 탄 모범택시', cost: 25000, requiredAnswer: '택시엔딩' },
         ],
       },
       {
@@ -150,9 +150,9 @@ export const questionsData: Question[] = [
         question: '택시를 탄 이유는?',
         options: ['지각', '체력방전', '짐이많아서'],
         items: [
-          { text: '5분 더 자려다 쓴 지각 면피 비용', cost: 12000, requiredAnswer: '지각' },
-          { text: '걷기 싫어서 탄 기본요금 거리', cost: 4800, requiredAnswer: '체력방전' },
-          { text: '짐 많다는 핑계로 편하게 귀가', cost: 9000, requiredAnswer: '짐이많아서' },
+          { text: '5분 더 자려다 쓴 지각 면피 택시 비용', cost: 12000, requiredAnswer: '지각' },
+          { text: '걷기 싫어서 탄 택시 기본요금 거리', cost: 4800, requiredAnswer: '체력방전' },
+          { text: '짐 많다는 핑계로 택시 타고 편하게 귀가', cost: 9000, requiredAnswer: '짐이많아서' },
         ],
       },
       {
@@ -162,9 +162,9 @@ export const questionsData: Question[] = [
         question: '편의점 참새 방앗간! 주력 상품은?',
         options: ['2+1행사', '신상', '야식'],
         items: [
-          { text: '안 사도 되는데 2+1이라 산 젤리', cost: 4500, requiredAnswer: '2+1행사' },
-          { text: 'SNS 핫한 신상 찾아 삼만리', cost: 3000, requiredAnswer: '신상' },
-          { text: '밤 11시에 못 참고 컵라면', cost: 1800, requiredAnswer: '야식' },
+          { text: '안 사도 되는데 편의점에서 2+1이라 산 젤리', cost: 4500, requiredAnswer: '2+1행사' },
+          { text: 'SNS 핫한 편의점 신상 찾아 삼만리', cost: 3000, requiredAnswer: '신상' },
+          { text: '밤 11시에 못 참고 편의점 컵라면 구매', cost: 1800, requiredAnswer: '야식' },
         ],
       },
       {
@@ -200,10 +200,10 @@ export const questionsData: Question[] = [
         label: '집순이(I)',
         type: 'select',
         question: '약속이 잡혔을 때 속마음은?',
-        options: ['취소되라', '나가기귀찮', '기빨림'],
+        options: ['취소돼라', '나가기귀찮', '기빨림'],
         items: [
           { text: '약속 취소돼서 카페값 굳음', cost: -15000, requiredAnswer: '취소되라' },
-          { text: '나가기 귀찮아서 배달 시켜 먹음', cost: 24000, requiredAnswer: '나가기귀찮' },
+          { text: '약속 나가기 귀찮아서 배달 시켜 먹음', cost: 24000, requiredAnswer: '나가기귀찮' },
           { text: '기 빨려서 조기 귀가한 뒤 아낀 2차 비용', cost: -21000, requiredAnswer: '기빨림' },
         ],
       },
@@ -214,9 +214,9 @@ export const questionsData: Question[] = [
         question: '모임에서 당신의 역할은?',
         options: ['분위기메이커', '총무', '주최자'],
         items: [
-          { text: '노래방 마이크 독점 사용료', cost: 20000, requiredAnswer: '분위기메이커' },
-          { text: '정산하느라 고생한 고생비', cost: -40000, requiredAnswer: '총무' },
-          { text: '주최하느라 고생한 고생비', cost: -45000, requiredAnswer: '주최자' },
+          { text: '모임에서 노래방 마이크 독점 사용료', cost: 20000, requiredAnswer: '분위기메이커' },
+          { text: '모임 정산하느라 고생한 고생비', cost: -40000, requiredAnswer: '총무' },
+          { text: '모임 주최하느라 고생한 고생비', cost: -45000, requiredAnswer: '주최자' },
         ],
       },
       {
@@ -226,9 +226,9 @@ export const questionsData: Question[] = [
         question: '당신의 현재 연애 상태는?',
         options: ['솔로', '커플', '썸/짝사랑'],
         items: [
-          { text: '크리스마스 선물 살 돈 굳음 (이득)', cost: -50000, requiredAnswer: '솔로' },
-          { text: '기념일 레스토랑 예약금', cost: 150000, requiredAnswer: '커플' },
-          { text: '잘 보이고 싶어서 산 새 옷', cost: 60000, requiredAnswer: '썸/짝사랑' },
+          { text: '솔로라 크리스마스 선물 살 돈 굳음 (이득)', cost: -50000, requiredAnswer: '솔로' },
+          { text: '연인과의 기념일 레스토랑 예약금', cost: 150000, requiredAnswer: '커플' },
+          { text: '상대에게 잘 보이고 싶어서 산 새 옷', cost: 60000, requiredAnswer: '썸/짝사랑' },
         ],
       },
       {
@@ -260,8 +260,8 @@ export const questionsData: Question[] = [
         label: 'SNS/인스타',
         type: 'normal',
         items: [
-          { text: '인스타 스토리용 감성 카페 탐방', cost: 18000 },
-          { text: '남들 여행 가는 거 구경하느라 배아픔', cost: 500 },
+          { text: '인스타 스토리 중독 치료비', cost: 18000 },
+          { text: 'SNS에서 남들 여행 가는 거 구경하느라 부러움', cost: 500 },
         ],
       },
     ],
@@ -280,7 +280,7 @@ export const questionsData: Question[] = [
         items: [
           { text: '살기 위해 마신 아아 365잔', cost: 450000, requiredAnswer: '아아(생존)' },
           { text: '스트레스 받아서 시럽 추가한 라떼', cost: 5500, requiredAnswer: '라떼(당충전)' },
-          { text: '남이 사줘서 얻어 먹은 커피', cost: 0, requiredAnswer: '기타' },
+          { text: '남이 사줘서 얻어 먹은 음료', cost: 0, requiredAnswer: '기타' },
         ],
       },
       {
@@ -302,7 +302,7 @@ export const questionsData: Question[] = [
         question: '야근/밤샘의 원인은?',
         options: ['일이많음', '미루다가', '상사호출'],
         items: [
-          { text: '야근 식대로 떼운 저녁값 (식비절약?)', cost: -10000, requiredAnswer: '일이많음' },
+          { text: '야근 식대로 떼운 저녁값 (식비절약)', cost: -10000, requiredAnswer: '일이많음' },
           { text: '벼락치기 하느라 산 에너지 드링크', cost: 4000, requiredAnswer: '미루다가' },
           { text: '회식 끌려가서 낭비한 시간 보상금', cost: -40000, requiredAnswer: '상사호출' },
         ],
@@ -316,7 +316,7 @@ export const questionsData: Question[] = [
         items: [
           { text: '만원 지하철에서 찌부된 정신적 피해', cost: 1000, requiredAnswer: '지옥철/버스' },
           { text: '늦잠 자서 탄 택시비', cost: 15000, requiredAnswer: '택시' },
-          { text: '금값이 된 기름값', cost: 50000, requiredAnswer: '자차' },
+          { text: '자차로 이동해서 금값이 된 기름값', cost: 50000, requiredAnswer: '자차' },
         ],
       },
       {
@@ -326,7 +326,7 @@ export const questionsData: Question[] = [
         question: '점심 어떻게 해결?',
         options: ['도시락/구내식당', '맛집탐방', '편의점'],
         items: [
-          { text: '식비 아끼려 노력한 도시락 (알뜰)', cost: -5000, requiredAnswer: '도시락/구내식당' },
+          { text: '점심 식비 아끼려 노력한 노력비용', cost: -5000, requiredAnswer: '도시락/구내식당' },
           { text: '엥겔지수 폭발시킨 맛집 웨이팅', cost: 15000, requiredAnswer: '맛집탐방' },
           { text: '삼각김밥으로 때운 끼니', cost: 1800, requiredAnswer: '편의점' },
         ],

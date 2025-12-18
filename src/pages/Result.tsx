@@ -178,10 +178,10 @@ const Result = () => {
 
           <div className='transform scale-[1.4] flex flex-col items-center drop-shadow-2xl relative z-30'>
             <div className='text-center mb-10 shrink-0'>
-              <h1 className='text-4xl font-bold font-receipt text-[#F8F1E5] tracking-tighter mb-4 drop-shadow-[0_4px_4px_rgba(0,0,0,0.3)]'>
-                2025 Santa's Fact Check
+              <h1 className='text-5xl font-bold font-receipt text-[#F8F1E5] tracking-tighter mb-4 drop-shadow-[0_4px_4px_rgba(0,0,0,0.3)]'>
+                2025 Santa's Fact Receipt
               </h1>
-              <p className='text-xl font-bold font-receipt text-[#F8F1E5]/90 drop-shadow-sm mb-4'>
+              <p className='text-2xl font-bold font-receipt text-[#F8F1E5]/90 drop-shadow-sm mb-4'>
                 산타가 {receiptData.nickname}님에게 보낸 팩폭 청구서
               </p>
             </div>
