@@ -116,7 +116,7 @@ export const questionsData: Question[] = [
         question: '주로 어디서 쇼핑했나요?',
         options: ['온라인', '오프라인', '당근'],
         items: [
-          { text: '온랄인에서 모델 핏 보고 옷 샀다가 반품비만 날림', cost: 3000, requiredAnswer: '온라인' },
+          { text: '온라인에서 모델 핏 보고 옷 샀다가 반품비만 날림', cost: 3000, requiredAnswer: '온라인' },
           { text: '오래 입을 거라며 합리화해서 산 옷 할부금', cost: 33000, requiredAnswer: '오프라인' },
           { text: '당근마켓 쿨거래로 득템', cost: -15000, requiredAnswer: '당근' },
         ],
