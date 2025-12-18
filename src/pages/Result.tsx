@@ -1,9 +1,23 @@
 import { useMemo, useRef, useState, useEffect } from 'react';
 import { toPng } from 'html-to-image';
+import { track } from '@vercel/analytics';
 
 import { useStore } from '../store/useStore';
 import { generateReceipt } from '../utils/receiptGenerator';
+import { saveReceiptToDatabase } from '../lib/receiptService';
 import Receipt from '../components/Receipt';
+
+const waitForImages = (element: HTMLElement) => {
+  const images = element.querySelectorAll('img');
+  const promises = Array.from(images).map((img) => {
+    if (img.complete && img.naturalHeight !== 0) return Promise.resolve();
+    return new Promise((resolve) => {
+      img.onload = resolve;
+      img.onerror = resolve;
+    });
+  });
+  return Promise.all(promises);
+};
 
 const Result = () => {
   const { nickname, selectedChips, persona, answers, reset } = useStore();
@@ -11,11 +25,13 @@ const Result = () => {
   const receiptRef = useRef<HTMLDivElement>(null);
   const exportRef = useRef<HTMLDivElement>(null);
   const scrollTargetRef = useRef<HTMLDivElement>(null);
+  const hasSavedRef = useRef(false);
 
   const [visibleIndex, setVisibleIndex] = useState(0);
   const [showTotal, setShowTotal] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
   const [isPaperReady, setIsPaperReady] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
 
   const receiptData = useMemo(() => {
     if (!nickname || selectedChips.length === 0) return null;
@@ -38,6 +54,40 @@ const Result = () => {
     }, 6000);
     return () => clearTimeout(timer);
   }, []);
+
+  useEffect(() => {
+    if (isComplete && receiptData && !hasSavedRef.current) {
+      hasSavedRef.current = true;
+
+      track('receipt_completed', {
+        nickname: receiptData.nickname,
+        total_amount: receiptData.totalAmount,
+        rank: receiptData.rank,
+        item_count: receiptData.items.length,
+      });
+
+      const saveReceipt = async () => {
+        try {
+          const result = await saveReceiptToDatabase(receiptData, answers, persona);
+
+          if (!result.success) {
+            console.error('Save Error Details:', result.error);
+            setSaveError('데이터 저장에 실패했습니다. (RLS 정책을 확인해주세요)');
+          } else {
+            console.log('영수증이 성공적으로 저장되었습니다.');
+            track('receipt_saved', {
+              nickname: receiptData.nickname,
+            });
+          }
+        } catch (err) {
+          console.error('저장 중 오류:', err);
+          setSaveError('데이터 저장 중 오류가 발생했습니다.');
+        }
+      };
+
+      saveReceipt();
+    }
+  }, [isComplete, receiptData, answers, persona]);
 
   const handleInteraction = () => {
     if (!receiptData || isComplete || !isPaperReady) return;
@@ -69,38 +119,35 @@ const Result = () => {
     if (!exportRef.current) return;
     try {
       await document.fonts.ready;
+      await waitForImages(exportRef.current);
 
-      const imgs = exportRef.current.querySelectorAll('img');
-      await Promise.all(
-        Array.from(imgs).map((img) =>
-          img.complete && (img as HTMLImageElement).naturalWidth > 0
-            ? Promise.resolve()
-            : new Promise((res) => ((img as HTMLImageElement).onload = res))
-        )
-      );
-
-      await toPng(exportRef.current, {
-        cacheBust: false,
+      const captureOptions = {
+        cacheBust: true,
         width: 1080,
         height: 1920,
         pixelRatio: 1,
-      });
+        filter: (node: HTMLElement) => {
+          if (node.tagName === 'LINK' && node.getAttribute('rel') === 'stylesheet') {
+            return true;
+          }
+          return true;
+        },
+      };
 
-      await new Promise((resolve) => setTimeout(resolve, 100));
+      await toPng(exportRef.current, captureOptions);
 
-      const dataUrl = await toPng(exportRef.current, {
-        cacheBust: false,
-        width: 1080,
-        height: 1920,
-        pixelRatio: 1,
-      });
+      const dataUrl = await toPng(exportRef.current, captureOptions);
 
       const link = document.createElement('a');
       link.download = `santa's-fact-receipt-${nickname}.png`;
       link.href = dataUrl;
       link.click();
+
+      track('receipt_downloaded', {
+        nickname: nickname,
+      });
     } catch (err) {
-      console.error(err);
+      console.error('캡처 에러:', err);
       alert('저장 실패ㅠㅠ 캡처해주세요!');
     }
   };
@@ -112,7 +159,7 @@ const Result = () => {
       onClick={handleInteraction}
       className='flex flex-col items-center min-h-full pb-52 cursor-pointer select-none relative'
     >
-      {/* 🖨️ 프린터 헤드 (화면 표시용) */}
+      {/* 🖨️ 프린터 헤드 */}
       <div className='sticky top-0 left-0 w-full h-[60px] bg-[#D32F2F] z-40 flex flex-col shadow-xl border-b-4 border-[#1A1A1A]'>
         <div className='flex-1 w-full flex items-center justify-center z-50'>
           {!isPaperReady && (
@@ -134,7 +181,7 @@ const Result = () => {
         <div className='w-full h-4 bg-[#1A1A1A] relative shrink-0'></div>
       </div>
 
-      {/* 영수증 영역 (화면 표시용) */}
+      {/* 영수증 영역 */}
       <div className='w-full flex justify-center -mt-2 z-0'>
         <div className='animate-printer pt-4'>
           <div className={`transition-transform duration-300 ${showTotal ? 'scale-100' : 'scale-[0.98]'}`}>
@@ -144,7 +191,7 @@ const Result = () => {
         </div>
       </div>
 
-      {/* 📸 캡처용 숨겨진 영역 */}
+      {/* 캡처용 숨겨진 영역 */}
       <div style={{ position: 'absolute', top: '-9999px', left: '-9999px' }}>
         <div
           ref={exportRef}

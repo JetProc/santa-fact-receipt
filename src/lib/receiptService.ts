@@ -1,15 +1,20 @@
 import { supabase } from './supabase';
 import type { ReceiptResult } from '../utils/receiptGenerator';
 
-export const saveReceiptToDatabase = async (receiptData: ReceiptResult) => {
+// ✅ [수정] answers와 actualPersona 인자 추가
+export const saveReceiptToDatabase = async (
+  receiptData: ReceiptResult,
+  answers: Record<string, string>,
+  actualPersona: string | null
+) => {
   try {
     const { data, error } = await supabase.from('receipts').insert([
       {
         nickname: receiptData.nickname,
-        persona: receiptData.rank,
+        persona: actualPersona || 'unknown',
         total_amount: receiptData.totalAmount,
-        items: JSON.stringify(receiptData.items),
-        answers: JSON.stringify({}),
+        items: receiptData.items,
+        answers: answers,
         receipt_num: receiptData.receiptNum,
         message: receiptData.message,
         hashtags: receiptData.hashtags,
