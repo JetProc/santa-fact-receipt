@@ -31,8 +31,7 @@ const Result = () => {
   const [showTotal, setShowTotal] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
   const [isPaperReady, setIsPaperReady] = useState(false);
-  const [saveError, setSaveError] = useState<string | null>(null);
-
+  const [, setSaveError] = useState<string | null>(null);
   const receiptData = useMemo(() => {
     if (!nickname || selectedChips.length === 0) return null;
     return generateReceipt(nickname, persona, selectedChips, answers);
@@ -80,11 +79,10 @@ const Result = () => {
             });
           }
         } catch (err) {
-          console.error('저장 중 오류:', err);
-          setSaveError('데이터 저장 중 오류가 발생했습니다.');
+          console.error(err);
+          alert('저장 중 오류가 발생했습니다.');
         }
       };
-
       saveReceipt();
     }
   }, [isComplete, receiptData, answers, persona]);
